@@ -5227,6 +5227,7 @@ GameObject:
   - component: {fileID: 611432643}
   - component: {fileID: 611432644}
   - component: {fileID: 611432645}
+  - component: {fileID: 611432646}
   m_Layer: 0
   m_Name: GameMaster
   m_TagString: Untagged
@@ -5277,8 +5278,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddfb195ec06dfe347862d8b041539665, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  standardTurretPrefab: {fileID: 8742476826262191809, guid: b97d457fc963dd64fa6e7f0261248900, type: 3}
-  missileLauncherPrefab: {fileID: 0}
+--- !u!114 &611432646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611432642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d053f914a6534a44d9afe0751714ec21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startMoney: 400
 --- !u!1001 &616982939
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9332,11 +9344,11 @@ RectTransform:
   m_Father: {fileID: 1794381531}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -20}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 46.96, y: 3.4199982}
   m_SizeDelta: {x: 200, y: 50}
-  m_Pivot: {x: 0.5, y: 1}
+  m_Pivot: {x: 1, y: 1}
 --- !u!114 &1072741109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10549,6 +10561,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e1e7dbc84bed914fbf217b1f941c5b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  standardTurret:
+    prefab: {fileID: 8742476826262191809, guid: b97d457fc963dd64fa6e7f0261248900, type: 3}
+    cost: 100
+  missileLauncher:
+    prefab: {fileID: 8602089918447404421, guid: a6c67f38fd0411246a6f79df5a5b3b29, type: 3}
+    cost: 250
 --- !u!4 &1325423752 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7953859983359632655, guid: 9d99427df417cf24b974e5f24960da5a, type: 3}
@@ -16457,7 +16475,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1435567972457540313, guid: 9bc9ce5de2efcdc439a396380b981f20, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PurchaseMissileLauncher
+      value: SelectMissileLauncher
       objectReference: {fileID: 0}
     - target: {fileID: 1435567972457540313, guid: 9bc9ce5de2efcdc439a396380b981f20, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -16467,6 +16485,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 1435567972457540314, guid: 9bc9ce5de2efcdc439a396380b981f20, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 53829b5b6cc490c4790c7801a20f2a22, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9bc9ce5de2efcdc439a396380b981f20, type: 3}
 --- !u!224 &2115795033 stripped
@@ -16654,7 +16676,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1435567972457540313, guid: 9bc9ce5de2efcdc439a396380b981f20, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PurchaseStandardTurret
+      value: SelectStandardTurret
       objectReference: {fileID: 0}
     - target: {fileID: 1435567972457540313, guid: 9bc9ce5de2efcdc439a396380b981f20, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -16664,6 +16686,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 1435567972457540314, guid: 9bc9ce5de2efcdc439a396380b981f20, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 6c70518a35231aa46bae32f7d58e5df3, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9bc9ce5de2efcdc439a396380b981f20, type: 3}
 --- !u!1001 &7135265444750510700

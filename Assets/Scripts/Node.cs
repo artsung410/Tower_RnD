@@ -6,7 +6,8 @@ public class Node : MonoBehaviour
     public Color hoverColor;
     public Vector3 positionOffest;
 
-    private GameObject turret;
+    [Header("Optional")]
+    public GameObject turret; // 지형 위에 실질적으로 건설 된 타워
 
     private Renderer rend;
     private Color startColor;
@@ -21,28 +22,38 @@ public class Node : MonoBehaviour
         buildManager = BuildManager.instance;
     }
 
+    // 설치 보간작업
+    public Vector3 GetBuildPosition()
+    {
+        return transform.position + positionOffest;
+    }
+
+    // <노드를 클릭했을 때>
     private void OnMouseDown()
     {
         if (EventSystem.current.IsPointerOverGameObject())
         {
             return;
-
         }
-        if (buildManager.GetTurretToBuild() == null)
+
+        // 상점에서 타워가 선택이 되지 않았을 경우.
+        if (!buildManager.CanBuild)
         {
             return;
         }
 
+        // 이미 지어진곳에는 설치 불가능
         if (turret != null)
         {
             Debug.Log("Can't build there! - TODO: Display on screen.");
             return;
         }
 
-        GameObject turretToBuild = BuildManager.instance.GetTurretToBuild();
-        turret = (GameObject)Instantiate(turretToBuild, transform.position + positionOffest, transform.rotation);
+        // 자기 자신의 지형에 설치함. (Node의 필드인 GetBuildPosition()까지 호출해서 적당한 높이에 설치)
+        buildManager.BuildTurretOn(this);
     }
 
+    // <노드에 마우스를 올려놓았을 때>
     private void OnMouseEnter()
     {
         if (EventSystem.current.IsPointerOverGameObject())
@@ -50,7 +61,7 @@ public class Node : MonoBehaviour
             return;
         }
 
-        if (buildManager.GetTurretToBuild() == null)
+        if (!buildManager.CanBuild)
         {
             return;
         }
@@ -58,6 +69,7 @@ public class Node : MonoBehaviour
         rend.material.color = hoverColor;
     }
 
+    // <노드에서 마우스가 벗어났을 때>
     private void OnMouseExit()
     {
         rend.material.color = startColor;
