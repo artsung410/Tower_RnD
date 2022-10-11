@@ -3,7 +3,13 @@ using UnityEngine.EventSystems;
 
 public class Node : MonoBehaviour
 {
+    [Header("설치 가능할 때 컬러")]
     public Color hoverColor;
+
+    [Header("설치 불가능할 때 컬러")]
+    public Color notEnoughMoneyColor;
+
+    [Header("지상으로부터 얼마나 떨어져서 건설할건지. (y값 조정)")]
     public Vector3 positionOffest;
 
     [Header("Optional")]
@@ -66,7 +72,15 @@ public class Node : MonoBehaviour
             return;
         }
 
-        rend.material.color = hoverColor;
+        if (buildManager.HasMoney)
+        {
+            rend.material.color = hoverColor;
+        }
+        else
+        {
+            rend.material.color = notEnoughMoneyColor;
+
+        }
     }
 
     // <노드에서 마우스가 벗어났을 때>

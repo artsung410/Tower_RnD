@@ -15,16 +15,29 @@ public class BuildManager : MonoBehaviour
         instance = this;
     }
 
+    // 타워 건설 효과
+    [Header("타워 건설 이펙트")]
+    public GameObject buildEffect;
+
     // 임시로 상점에서 선택된 터렛 데이터를 저장
     private TurretBlueprint turretToBuild;
 
 
-    // 상점에서 타워가 선택이 되었으면 turretToBuild는 존재해서 true, 선택이 안되었으면 false
+    // 상점에서 타워가 선택이 되었으면 turretToBuild는 존재해서 true, 선택이 안되었으면 false를 반환
     public bool CanBuild 
     {
         get
         {
             return turretToBuild != null;
+        }
+    }
+
+    // 소지골드가 부족하지 않으면 true, 부족하면 flase를 반환.
+    public bool HasMoney
+    {
+        get
+        {
+            return PlayerStats.Money >= turretToBuild.cost;
         }
     }
 
@@ -40,8 +53,11 @@ public class BuildManager : MonoBehaviour
         // 타워 가격만큼 소지골드 차감
         PlayerStats.Money -= turretToBuild.cost;
 
-        GameObject turret = Instantiate(turretToBuild.prefab, node.GetBuildPosition(), Quaternion.identity);
+        GameObject turret = (GameObject)Instantiate(turretToBuild.prefab, node.GetBuildPosition(), Quaternion.identity);
         node.turret = turret;
+
+        GameObject effect = (GameObject)Instantiate(buildEffect, node.GetBuildPosition(), Quaternion.identity);
+        Destroy(effect, 5f);
     }
 
     // 상점에서 타워가 선택이 되었으면 turretToBuild에 터렛데이터가 담기고, turret설치가 준비됨.
