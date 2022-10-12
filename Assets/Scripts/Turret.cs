@@ -31,9 +31,14 @@ public class Turret : MonoBehaviour
     [Header("투사체 발사 위치")]
     public Transform firePoint;
 
+    [Header("DangerZone")]
+    public GameObject dangerZone;
+    private GameObject newDangerZone;
+    Quaternion startDangerZoneRotation;
+    private bool isEnemyInDangerZone;
+
     [Header("====== 레이저 ======")]
     public bool useLaser = false;
-
     public int damageOverTime = 30;
     public float slowAmount = 0.5f;
 
@@ -43,6 +48,10 @@ public class Turret : MonoBehaviour
 
     private void Start()
     {
+        newDangerZone = Instantiate(dangerZone, transform.position, Quaternion.identity);
+        startDangerZoneRotation = newDangerZone.transform.rotation;
+        newDangerZone.SetActive(false);
+
         InvokeRepeating("UpdateTarget", 0f, 0.5f);
     }
 
@@ -69,17 +78,33 @@ public class Turret : MonoBehaviour
         // 적이 범위안에 들어왔고, 적과의 거리가 범위값보다 작을경우
         if (nearestEnemy != null && shortestDistance <= range)
         {
+            newDangerZone.SetActive(true);
+            isEnemyInDangerZone = true;
+
             target = nearestEnemy.transform;
             targetEnemy = nearestEnemy.GetComponent<Enemy>();
         }
         else
         {
+            newDangerZone.SetActive(false);
+            isEnemyInDangerZone = false;
+
             target = null;
         }
     }
 
     private void Update()
     {
+        // 적이 dangerZone 안으로 들어왔을 경우
+        if(isEnemyInDangerZone)
+        {
+            newDangerZone.transform.Rotate(0, -60f * Time.deltaTime, 0f);
+        }
+        else
+        {
+            newDangerZone.transform.rotation = startDangerZoneRotation;
+        }
+
         // 적이 범위밖으로 사라져 target이 null이 되면 리턴한다.
         if (target == null)
         {

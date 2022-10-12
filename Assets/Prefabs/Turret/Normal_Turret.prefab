@@ -286,3 +286,10 @@ MonoBehaviour:
   turnSpeed: 10
   bulletPrefab: {fileID: 1503814007877479681, guid: 8a7f5eae73365304abe88ddda5d65200, type: 3}
   firePoint: {fileID: 51144805884413694}
+  dangerZone: {fileID: 2214176491888679319, guid: d1674602c43ea344abd3e0948cd9832e, type: 3}
+  useLaser: 0
+  damageOverTime: 30
+  slowAmount: 0.5
+  lineRenderer: {fileID: 0}
+  impactEffect: {fileID: 0}
+  impactLight: {fileID: 0}
