@@ -5,8 +5,8 @@ using UnityEngine;
 public class Turret : MonoBehaviour
 {
     private Transform target;
+    private Enemy targetEnemy;
 
-    [Header("====== Attributes ======")]
     [Header("사거리")]
     public float range = 15f;
 
@@ -14,7 +14,6 @@ public class Turret : MonoBehaviour
     public float fireRate = 1f;
     private float fireCountdown = 0f;
 
-    [Header("====== Unity Setup Fields ======")]
     [Header("타겟 TAG")]
     public string enemyTag = "Enemy";
 
@@ -24,11 +23,23 @@ public class Turret : MonoBehaviour
     [Header("회전속도")]
     public float turnSpeed = 10f;
 
+    [Header("====== 투사체 ======")]
+
     [Header("투사체 프리팹")]
     public GameObject bulletPrefab;
 
     [Header("투사체 발사 위치")]
     public Transform firePoint;
+
+    [Header("====== 레이저 ======")]
+    public bool useLaser = false;
+
+    public int damageOverTime = 30;
+    public float slowAmount = 0.5f;
+
+    public LineRenderer lineRenderer;
+    public ParticleSystem impactEffect;
+    public Light impactLight;
 
     private void Start()
     {
@@ -59,6 +70,7 @@ public class Turret : MonoBehaviour
         if (nearestEnemy != null && shortestDistance <= range)
         {
             target = nearestEnemy.transform;
+            targetEnemy = nearestEnemy.GetComponent<Enemy>();
         }
         else
         {
@@ -71,23 +83,73 @@ public class Turret : MonoBehaviour
         // 적이 범위밖으로 사라져 target이 null이 되면 리턴한다.
         if (target == null)
         {
+            if (useLaser)
+            {
+                if (lineRenderer.enabled)
+                {
+                    lineRenderer.enabled = false;
+                    impactEffect.Stop();
+                    impactLight.enabled = false;
+                }
+            }
             return;
         }
 
-        // Target lock on
-        Vector3 dir = target.position - transform.position;
-        Quaternion lookRotation =  Quaternion.LookRotation(dir);
-        Vector3 rotation = Quaternion.Lerp(partToRotate.rotation, lookRotation, Time.deltaTime * turnSpeed).eulerAngles;
+        // 타겟을 찾는다.
+        LockOnTarget();
 
-        partToRotate.rotation = Quaternion.Euler(0f, rotation.y, 0f);
-
-        if (fireCountdown <= 0f)
+        // 레이저를 사용할 때
+        if (useLaser)
         {
-            Shoot();
-            fireCountdown = 1f / fireRate;
+            Laser();
         }
 
-        fireCountdown -= Time.deltaTime;
+        // 총알을 사용할 때
+        else
+        {
+            if (fireCountdown <= 0f)
+            {
+                Shoot();
+                fireCountdown = 1f / fireRate;
+            }
+
+            fireCountdown -= Time.deltaTime;
+        }
+    }
+
+    void LockOnTarget()
+    {
+        Vector3 dir = target.position - transform.position;
+        Quaternion lookRotation = Quaternion.LookRotation(dir);
+        Vector3 rotation = Quaternion.Lerp(partToRotate.rotation, lookRotation, Time.deltaTime * turnSpeed).eulerAngles;
+        partToRotate.rotation = Quaternion.Euler(0f, rotation.y, 0f);
+    }
+
+    void Laser()
+    {
+        // 데미지 적용 (시간에 비례해서)
+        targetEnemy.TakeDamage(damageOverTime * Time.deltaTime);
+
+        // 슬로우 효과 적용
+        targetEnemy.Slow(slowAmount);
+        if (!lineRenderer.enabled)
+        {
+            lineRenderer.enabled = true;
+            impactEffect.Play();
+            impactLight.enabled = true;
+        }
+
+        // 처음 발사 위치
+        lineRenderer.SetPosition(0, firePoint.position);
+
+        // 마지막 위치
+        lineRenderer.SetPosition(1, target.position);
+
+        Vector3 dir = firePoint.position - target.position;
+
+        impactEffect.transform.position = target.position + dir.normalized;
+
+        impactEffect.transform.rotation = Quaternion.LookRotation(dir);
     }
 
     void Shoot()

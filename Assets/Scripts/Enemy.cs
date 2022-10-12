@@ -2,37 +2,47 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float speed = 10f;
+    [Header("초기 이동속도")]
+    public float startSpeed = 10f;
 
-    private Transform target;
-    private int wavepointIndex = 0;
+    [HideInInspector]
+    public float speed;
+
+    [Header("체력")]
+    public float health = 100;
+
+    [Header("처치시 골드")]
+    public int worth = 50;
+
+    [Header("사망 효과")]
+    public GameObject deathEffect;
 
     private void Start()
     {
-        target = Waypoints.points[0];
+        speed = startSpeed;
     }
 
-    private void Update()
+    public void TakeDamage(float amount)
     {
-        Vector3 dir = target.position - transform.position;
-        transform.Translate(dir.normalized * speed * Time.deltaTime, Space.World);
+        health -= amount;
 
-        if (Vector3.Distance(transform.position, target.position) <= 0.2f)
+        if (health <= 0)
         {
-            GetNextWayPoint();
+            Die();
         }
     }
 
-    // 다음 way포인트 할당
-    void GetNextWayPoint()
+    public void Slow(float pct)
     {
-        if (wavepointIndex >= Waypoints.points.Length - 1)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        speed = startSpeed * (1f - pct);
+    }
 
-        wavepointIndex++;
-        target = Waypoints.points[wavepointIndex];
+    // 적이 죽으면 일정량의 골드를 획득;
+    void Die()
+    {
+        GameObject effect = (GameObject)Instantiate(deathEffect, transform.position, Quaternion.identity);
+        Destroy(effect, 5f);
+        PlayerStats.Money += worth;
+        Destroy(gameObject);
     }
 }
